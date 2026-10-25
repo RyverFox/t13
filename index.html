@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>This Page Got Pulled | The Forgotten Halls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+
+<style>
+  :root{
+    --bg:#11100f;
+    --text:#f7f3f4;
+    --gold-1:#f8ebbd;
+    --gold-2:#d4a94f;
+    --gold-3:#8a6322;
+    --muted:rgba(247,243,244,.62);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Crimson Text', Georgia, 'Times New Roman', serif;
+    font-size:19px;
+    line-height:1.5;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ---------- Background texture + atmosphere ---------- */
+  .grain{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    opacity:.08; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .vignette{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(ellipse at 50% 42%, transparent 35%, rgba(0,0,0,.6) 100%);
+  }
+  .glow{
+    position:absolute; left:50%; top:42%;
+    width:min(130vw,980px); aspect-ratio:1;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(212,169,79,.20) 0%, rgba(212,169,79,.06) 38%, transparent 66%);
+    z-index:0; pointer-events:none;
+    animation:breathe 8s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{opacity:.7; transform:translate(-50%,-50%) scale(1)}
+    50%{opacity:1; transform:translate(-50%,-50%) scale(1.07)}
+  }
+  .ribs{
+    position:absolute; left:0; right:0; bottom:0; height:62%;
+    z-index:0; pointer-events:none; opacity:.2;
+    background:url('img/fossil-ribs.jpg') center bottom / cover no-repeat;
+    -webkit-mask-image:linear-gradient(to top,#000 5%,transparent 88%);
+            mask-image:linear-gradient(to top,#000 5%,transparent 88%);
+  }
+
+  /* ---------- Layout ---------- */
+  .page{
+    position:relative; z-index:2;
+    min-height:100vh;
+    display:flex; flex-direction:column;
+    padding:26px clamp(20px,4vw,56px) 30px;
+  }
+
+  /* ---------- Header (no menu) ---------- */
+  .top{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:20px;
+  }
+  .brand .name{
+    font-family:'Cinzel', serif; font-weight:600;
+    font-size:clamp(17px,2vw,24px); letter-spacing:.18em;
+    background:linear-gradient(180deg,var(--gold-1) 0%,var(--gold-2) 55%,var(--gold-3) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    white-space:nowrap;
+  }
+  .brand .sub{
+    font-family:'Cinzel', serif; font-size:10px; letter-spacing:.42em;
+    text-transform:uppercase; color:var(--muted); margin-top:6px;
+  }
+  .top .meta{
+    font-family:'Cinzel', serif; font-size:11px; letter-spacing:.28em;
+    text-transform:uppercase; color:var(--muted); text-align:right; line-height:2;
+  }
+  .top .meta b{ color:var(--gold-2); font-weight:500; }
+
+  /* ---------- Stage ---------- */
+  .stage{
+    flex:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; position:relative;
+    padding-top:8px;
+  }
+
+  /* Wolf: always centred, scales with viewport, fades into the background */
+  .skull{
+    position:relative;
+    width:clamp(520px, min(108vw, 110vh), 1040px);
+    margin:0 auto;
+    flex:none;
+  }
+  .skull img{
+    display:block; width:100%; height:auto;
+    -webkit-mask-image:radial-gradient(ellipse 58% 60% at 50% 50%, #000 72%, transparent 100%);
+            mask-image:radial-gradient(ellipse 58% 60% at 50% 50%, #000 72%, transparent 100%);
+    user-select:none; -webkit-user-drag:none;
+    animation:float 9s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-8px)}
+  }
+
+  .copy{
+    position:relative; z-index:3;
+    margin-top:-6vh;
+    display:flex; flex-direction:column; align-items:center;
+    padding:0 12px;
+  }
+  .eyebrow{
+    font-family:'Cinzel', serif; font-size:12px; letter-spacing:.42em;
+    text-transform:uppercase; color:var(--gold-2);
+    display:flex; align-items:center; gap:14px;
+  }
+  .eyebrow::before,.eyebrow::after{
+    content:""; width:46px; height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold-2));
+  }
+  .eyebrow::after{ background:linear-gradient(90deg,var(--gold-2),transparent); }
+
+  h1{
+    margin-top:16px;
+    font-family:'Cinzel', serif; font-weight:600; text-transform:uppercase;
+    font-size:clamp(30px,5.4vw,70px); line-height:1.1; letter-spacing:.12em;
+    background:linear-gradient(180deg,var(--gold-1) 0%,var(--gold-2) 52%,var(--gold-3) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 2px 18px rgba(0,0,0,.6));
+  }
+  .rule{
+    width:120px; height:1px; margin:22px auto 0;
+    background:linear-gradient(90deg,transparent,var(--gold-2),transparent);
+  }
+  .lead{
+    margin-top:22px; max-width:640px;
+    font-size:clamp(19px,2.1vw,25px); line-height:1.5; color:var(--text);
+    text-wrap:balance;
+  }
+  .label{
+    margin-top:14px; max-width:600px;
+    font-style:italic; font-size:clamp(16px,1.6vw,19px);
+    color:var(--muted); text-wrap:balance;
+  }
+  .label span{ color:var(--gold-2); font-style:normal; font-family:'Cinzel',serif; font-size:.78em; letter-spacing:.2em; text-transform:uppercase; margin-right:6px; }
+
+  /* Stats, mirrors the reference's footer stats */
+  .stats{
+    margin-top:clamp(22px,4vh,40px);
+    display:flex; justify-content:center; flex-wrap:wrap;
+    gap:clamp(24px,5vw,70px);
+  }
+  .stat{ min-width:160px; max-width:220px; }
+  .stat .num{
+    font-family:'Cinzel', serif; font-size:clamp(30px,3.4vw,42px); font-weight:500;
+    color:var(--gold-1); letter-spacing:.06em;
+    text-shadow:0 0 22px rgba(212,169,79,.25);
+  }
+  .stat .k{
+    font-family:'Cinzel', serif; font-size:11px; letter-spacing:.32em;
+    text-transform:uppercase; color:var(--text); margin-top:6px;
+  }
+  .stat .v{
+    font-style:italic; font-size:16px; color:var(--muted); margin-top:6px; line-height:1.4;
+  }
+
+  /* Side annotations (desktop only), echoes the reference's corner labels */
+  .side{
+    position:absolute; top:40%; transform:translateY(-50%);
+    font-family:'Cinzel', serif; font-size:11px; letter-spacing:.3em;
+    text-transform:uppercase; color:var(--muted); line-height:2.4;
+    z-index:3;
+  }
+  .side.left{ left:clamp(20px,4vw,56px); border-left:1px solid rgba(212,169,79,.5); padding-left:18px; }
+  .side.right{ right:clamp(20px,4vw,56px); text-align:left; border-right:1px solid rgba(212,169,79,.5); padding-right:18px; text-align:right; }
+  .side .big{ color:var(--gold-2); font-size:12px; }
+  .side .val{ display:block; font-family:'Crimson Text',serif; font-style:italic; text-transform:none; letter-spacing:.02em; font-size:17px; color:var(--text); margin-bottom:14px; }
+
+  .hint{
+    margin-top:26px; text-align:center;
+    font-style:italic; font-size:16px; color:rgba(247,243,244,.45);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1020px){
+    .side{ display:none; }
+  }
+  @media (max-width: 640px){
+    body{ font-size:17px; }
+    .top .meta{ font-size:9px; letter-spacing:.2em; }
+    .brand .sub{ font-size:8px; letter-spacing:.3em; }
+    .skull{ width:min(118vw,560px); }
+    .copy{ margin-top:-9vh; }
+    .eyebrow{ font-size:10px; letter-spacing:.3em; }
+    .eyebrow::before,.eyebrow::after{ width:24px; }
+    .stats{ gap:26px 18px; }
+    .stat{ min-width:0; flex:1 1 40%; max-width:none; }
+  }
+  @media (max-width: 380px){
+    .top .meta{ display:none; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .skull img, .glow{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="glow" aria-hidden="true"></div>
+  <div class="ribs" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <aside class="side left" aria-hidden="true">
+    <span class="big">Lost.</span>
+    <span class="big">Misplaced.</span>
+    <span class="big">Devoured.</span>
+  </aside>
+
+  <aside class="side right" aria-hidden="true">
+    <span class="big">Status</span>
+    <span class="val">Extinct</span>
+    <span class="big">Last sighted</span>
+    <span class="val">A broken link, 2:14 pm</span>
+    <span class="big">Location</span>
+    <span class="val">Somewhere off the sitemap</span>
+  </aside>
+
+  <main class="page">
+    <header class="top">
+      <div class="brand">
+        <div class="name">The Forgotten Halls</div>
+        <div class="sub">Paleontology &amp; Lost Things</div>
+      </div>
+      <div class="meta">
+        Open today<br><b>Maybe</b>
+      </div>
+    </header>
+
+    <section class="stage">
+      <div class="skull">
+        <img src="img/dire-wolf-skull.webp" alt="Fossilised dire wolf skull with bared fangs, lit in warm gold against a black background">
+      </div>
+
+      <div class="copy">
+        <div class="eyebrow">A specimen has gone missing</div>
+        <h1>This Page Got Pulled</h1>
+        <div class="rule"></div>
+        <p class="lead">The page you are looking for has gone extinct &mdash; or someone yanked it out of the ground and ate it.</p>
+        <p class="label"><span>Specimen label</span> Canis dirus. Last seen on a link you clicked. Fangs: confirmed. Remorse: none.</p>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="num">00</div>
+            <div class="k">Pages Found Here</div>
+            <div class="v">Not one. We checked twice.</div>
+          </div>
+          <div class="stat">
+            <div class="num">12K</div>
+            <div class="k">Years Since Last Seen</div>
+            <div class="v">Give or take a few thousand.</div>
+          </div>
+          <div class="stat">
+            <div class="num">42</div>
+            <div class="k">Teeth, Still Sharp</div>
+            <div class="v">Best not to count them up close.</div>
+          </div>
+        </div>
+
+        <p class="hint">Move your cursor. The wolf is following the scent.</p>
+      </div>
+    </section>
+  </main>
+
+  <canvas id="smoke" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
+
+<script>
+(() => {
+  const canvas = document.getElementById('smoke');
+  const ctx = canvas.getContext('2d');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, dpr = 1;
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const puffs = [];
+  const MAX = 320;
+  let last = null;
+
+  function spawn(x, y, vx, vy){
+    if (puffs.length >= MAX) puffs.shift();
+    const gold = Math.random() < 0.22;
+    puffs.push({
+      x: x + (Math.random() - 0.5) * 6,
+      y: y + (Math.random() - 0.5) * 6,
+      vx: vx * 0.4 + (Math.random() - 0.5) * 0.35,
+      vy: vy * 0.4 - (0.15 + Math.random() * 0.45),
+      r: 4 + Math.random() * 5,
+      grow: 0.35 + Math.random() * 0.5,
+      life: 0,
+      max: 80 + Math.random() * 70,
+      gold
+    });
+  }
+
+  function onMove(x, y){
+    if (reduce) return;
+    if (last){
+      const dx = x - last.x, dy = y - last.y;
+      const d = Math.hypot(dx, dy);
+      const steps = Math.min(8, Math.max(1, Math.ceil(d / 5)));
+      for (let i = 1; i <= steps; i++){
+        const t = i / steps;
+        spawn(last.x + dx * t, last.y + dy * t, dx, dy);
+      }
+    }
+    last = { x, y };
+  }
+
+  window.addEventListener('pointermove', e => onMove(e.clientX, e.clientY), { passive: true });
+  window.addEventListener('pointerdown', e => { for (let i = 0; i < 6; i++) spawn(e.clientX, e.clientY, (Math.random()-0.5)*2, 0); }, { passive: true });
+  document.addEventListener('pointerleave', () => { last = null; });
+
+  function frame(){
+    ctx.clearRect(0, 0, W, H);
+    for (let i = puffs.length - 1; i >= 0; i--){
+      const p = puffs[i];
+      p.life++;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.985;
+      p.vy *= 0.985;
+      p.vy -= 0.006;               // smoke rises
+      p.r += p.grow;
+      const t = p.life / p.max;
+      if (t >= 1){ puffs.splice(i, 1); continue; }
+
+      const fadeIn = Math.min(1, t / 0.12);
+      const a = (1 - t) * fadeIn * 0.2;
+      const col = p.gold ? '212,169,79' : '214,206,198';
+      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+      g.addColorStop(0,   `rgba(${col},${a})`);
+      g.addColorStop(0.45,`rgba(${col},${a * 0.5})`);
+      g.addColorStop(1,   `rgba(${col},0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+  if (!reduce) requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
